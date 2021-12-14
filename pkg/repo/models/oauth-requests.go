@@ -1,7 +1,10 @@
 package models
 
+// IntrospectionRequest defines the format for a token introspection request at the
+// /introspect endpoint. Defined here: https://datatracker.ietf.org/doc/html/rfc7662.html
 type IntrospectionRequest struct {
-	Token string `json:"token"`
+	Token         string `json:"token"`
+	TokenTypeHint string `json:"token_type_hint"` // https://datatracker.ietf.org/doc/html/rfc7009
 }
 
 type LoginRequest struct {
