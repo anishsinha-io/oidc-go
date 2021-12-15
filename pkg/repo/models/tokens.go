@@ -8,7 +8,7 @@ import (
 )
 
 type Signer interface {
-	Issue(time.Duration, string) (string, error)
+	Issue(time.Duration, string, string) (string, error)
 	Validate(string) (Claims, error)
 }
 
@@ -23,6 +23,7 @@ type AccessTokenClaims struct {
 	Iss      string    `json:"iss"`
 	Sub      string    `json:"sub"`
 	ClientId string    `json:"client_id"`
+	Scope    string    `json:"scope"`
 	Jti      uuid.UUID `json:"jti"`
 }
 
@@ -48,7 +49,8 @@ type RefreshTokenClaims struct {
 	Sub            string    `json:"sub"`
 	ClientId       string    `json:"client_id"`
 	Jti            uuid.UUID `json:"jti"`
-	AccessTokenJti string    `json:"access_token_jti"`
+	Scope          string    `json:"scope"`
+	AccessTokenJti uuid.UUID `json:"access_token_jti"`
 }
 
 func (t *AccessTokenClaims) Valid() error {

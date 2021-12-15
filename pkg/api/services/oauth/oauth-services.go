@@ -10,13 +10,24 @@ import (
 	"github.com/anish-sinha1/oidc-go/pkg/repo/models"
 )
 
-func ValidateToken(token string) (bool, error) {
-	kp, err := auth.NewRSAKeyPair()
-	if err != nil {
-		return false, err
+// ValidateToken validates a token and returns a boolean. It can be passed any string and
+//  any signing method, allowing it to be used with any signing algorithm
+func ValidateToken(token string, signingMethod string, tokenType string) (bool, error) {
+	var signer auth.Signer
+	switch signingMethod {
+	case "RS256":
+		kp, err := auth.CreateKeychain()
+		if err != nil {
+			return false, err
+		}
+		signer = kp
+	case "HS256":
+		// implement HS256
+	case "ES256":
+		// implement ES256
 	}
 	// validate signature
-	claims, err := kp.Validate(token)
+	claims, err := signer.Validate(token, tokenType)
 	if err != nil {
 		return false, err
 	}
@@ -29,16 +40,16 @@ func ValidateToken(token string) (bool, error) {
 	return true, nil
 }
 
-func IssueToken(ttl time.Duration, sub string) (string, error) {
-	kp, err := auth.NewRSAKeyPair()
+func IssueTokens(ttl time.Duration, sub string, token string) (map[string]string, error) {
+	keychain, err := auth.CreateKeychain()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	token, err := kp.Issue(ttl, sub)
+	tokens, err := keychain.Issue(ttl, sub)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return token, nil
+	return tokens, nil
 }
 
 func ValidateUriParams(qs models.AuthorizeQs) (bool, error) {

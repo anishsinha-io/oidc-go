@@ -39,7 +39,7 @@ func handleTokenIntrospect(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	_, err := oauth.ValidateToken(token.Token)
+	_, err := oauth.ValidateToken(token.Token, "RS256", "access_token")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
